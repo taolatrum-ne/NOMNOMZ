@@ -337,16 +337,20 @@ export const RestaurantDashboard: React.FC = () => {
                     <TrendingUp className="w-5 h-5" />
                   </div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Số kg đã bán</p>
-                  <p className="text-2xl font-black text-slate-800">{reportRange === 'week' ? '45.5' : '182.0'} <span className="text-xs font-normal opacity-60">kg</span></p>
-                  <p className="text-[10px] font-bold text-green-500 mt-2">+{reportRange === 'week' ? '12%' : '8%'} so với kỳ trước</p>
+                  <p className="text-2xl font-black text-slate-800">{reportRange === 'week' ? '24.2' : '102.5'} <span className="text-xs font-normal opacity-60">kg</span></p>
+                  <p className="text-[10px] font-bold text-green-500 mt-2">+{reportRange === 'week' ? '5%' : '3%'} so với kỳ trước</p>
                 </div>
                 <div className="bg-white p-6 rounded-[32px] border border-slate-100 nomnomz-shadow">
                   <div className="w-10 h-10 bg-secondary rounded-2xl flex items-center justify-center text-primary mb-4">
                     <Package className="w-5 h-5" />
                   </div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Doanh thu</p>
-                  <p className="text-2xl font-black text-slate-800">{reportRange === 'week' ? '3.8M' : '15.2M'}</p>
-                  <p className="text-[10px] font-bold text-slate-400 mt-2">Số tiền tiết kiệm được</p>
+                  <p className="text-2xl font-black text-slate-800">
+                    {reportRange === 'week' ? '4.2M' : '20.2M'}
+                  </p>
+                  <p className="text-[10px] font-bold text-slate-400 mt-2">
+                    {reportRange === 'week' ? 'Số tiền tiết kiệm được' : 'Số tiền tiết kiệm được trong 3 tháng'}
+                  </p>
                 </div>
               </div>
 

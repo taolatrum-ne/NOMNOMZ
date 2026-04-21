@@ -93,8 +93,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const loginUser = (phone: string) => {
     setCurrentUser({
       id: 'u1',
-      name: 'Người dùng NOMNOMz',
-      phoneNumber: phone,
+      name: 'Nom-match',
+      phoneNumber: '8386xinchaoban',
       allergies: ['hải sản'],
       favorites: ['Saigon Café']
     });

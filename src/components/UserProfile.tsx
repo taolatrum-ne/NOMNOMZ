@@ -11,12 +11,17 @@ export const UserProfile: React.FC = () => {
   const [showHeartMessage, setShowHeartMessage] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showTracking, setShowTracking] = useState(false);
+  const [showPreferences, setShowPreferences] = useState(false);
   const { orders } = useApp();
 
   if (!currentUser) return null;
 
-  const allergyOptions = ['Hải sản', 'Đồ cay', 'Đậu phộng', 'Sữa', 'Gluten'];
+    const allergyOptions = ['Hải sản', 'Đồ cay', 'Đậu phộng', 'Sữa', 'Gluten'];
   const favoriteOptions = ['Thịt bò', 'Thịt lợn', 'Hải sản', 'Đồ chay', 'Đồ ngọt', 'Món Á', 'Món Âu'];
+
+  // Dynamic lists that combine default options and user's custom additions
+  const displayedAllergies = Array.from(new Set([...allergyOptions, ...currentUser.allergies]));
+  const displayedFavorites = Array.from(new Set([...favoriteOptions, ...currentUser.favorites]));
 
   const togglePreference = (type: 'allergies' | 'favorites', value: string) => {
     const current = [...currentUser[type]];
@@ -57,85 +62,10 @@ export const UserProfile: React.FC = () => {
       </header>
 
       <div className="px-6 mt-10 space-y-10">
-        <section>
-          <div className="flex items-center gap-2 mb-6 px-2">
-            <ShieldAlert className="w-5 h-5 text-red-500" />
-            <h3 className="text-sm uppercase font-black text-slate-800 tracking-widest">Hồ sơ dị ứng</h3>
-          </div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {allergyOptions.map(option => (
-              <button
-                key={option}
-                onClick={() => togglePreference('allergies', option)}
-                className={cn(
-                  "px-4 py-2 rounded-xl text-xs font-bold transition-all",
-                  currentUser.allergies.includes(option) 
-                    ? "bg-red-500 text-white shadow-md" 
-                    : "bg-slate-100 text-slate-400"
-                )}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-          <div className="flex gap-2">
-            <input 
-              type="text" 
-              placeholder="Khác..."
-              value={otherAllergy}
-              onChange={(e) => setOtherAllergy(e.target.value)}
-              className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-2 text-xs font-bold focus:ring-1 focus:ring-red-200"
-            />
-            <button 
-              onClick={() => addOther('allergies')}
-              className="bg-red-100 text-red-500 p-2 rounded-xl"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
-        </section>
-
-        <section>
-          <div className="flex items-center gap-2 mb-6 px-2">
-            <Heart className="w-5 h-5 text-primary" />
-            <h3 className="text-sm uppercase font-black text-slate-800 tracking-widest">Món ăn yêu thích</h3>
-          </div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {favoriteOptions.map(option => (
-              <button
-                key={option}
-                onClick={() => togglePreference('favorites', option)}
-                className={cn(
-                  "px-4 py-2 rounded-xl text-xs font-bold transition-all",
-                  currentUser.favorites.includes(option) 
-                    ? "bg-primary text-white shadow-md" 
-                    : "bg-slate-100 text-slate-400"
-                )}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-          <div className="flex gap-2">
-            <input 
-              type="text" 
-              placeholder="Khác..."
-              value={otherFavorite}
-              onChange={(e) => setOtherFavorite(e.target.value)}
-              className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-2 text-xs font-bold focus:ring-1 focus:ring-primary/20"
-            />
-            <button 
-              onClick={() => addOther('favorites')}
-              className="bg-secondary text-primary p-2 rounded-xl"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
-        </section>
-
         <section className="space-y-4 pt-4 border-t border-slate-100">
-          <h3 className="text-xs uppercase font-black text-slate-400 tracking-widest px-2">Hoạt động</h3>
+          <h3 className="text-xs uppercase font-black text-slate-400 tracking-widest px-2">Cá nhân</h3>
           {[
+            { label: 'Hồ sơ cá nhân', icon: User, onClick: () => setShowPreferences(true) },
             { label: 'Theo dõi đơn hàng', icon: ShoppingBag, onClick: () => setShowTracking(true) },
             { label: 'Lịch sử đơn hàng', icon: History, onClick: () => setShowHistory(true) },
             { label: 'Địa chỉ đã lưu', icon: MapPin, onClick: () => setShowHeartMessage(true) },
@@ -167,6 +97,104 @@ export const UserProfile: React.FC = () => {
       </div>
 
       <AnimatePresence>
+        {showPreferences && (
+          <div className="fixed inset-0 z-50 flex flex-col bg-white">
+            <header className="px-6 pt-16 pb-6 border-b border-slate-100 flex items-center gap-4">
+              <button onClick={() => setShowPreferences(false)} className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-primary">
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <h2 className="text-xl font-black text-slate-900">Hồ sơ cá nhân</h2>
+            </header>
+
+            <div className="flex-1 overflow-y-auto px-6 py-8 space-y-12">
+              <section>
+                <div className="flex items-center gap-2 mb-6 px-2 text-red-500">
+                  <ShieldAlert className="w-5 h-5" />
+                  <h3 className="text-sm uppercase font-black tracking-widest">Dị ứng</h3>
+                </div>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {displayedAllergies.map(option => (
+                    <button
+                      key={option}
+                      onClick={() => togglePreference('allergies', option)}
+                      className={cn(
+                        "px-4 py-2 rounded-xl text-xs font-bold transition-all",
+                        currentUser.allergies.includes(option) 
+                          ? "bg-red-500 text-white shadow-md font-black" 
+                          : "bg-slate-100 text-slate-400"
+                      )}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <input 
+                    type="text" 
+                    placeholder="Dị ứng khác..."
+                    value={otherAllergy}
+                    onChange={(e) => setOtherAllergy(e.target.value)}
+                    className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-2 text-xs font-black focus:ring-1 focus:ring-red-200"
+                  />
+                  <button 
+                    onClick={() => addOther('allergies')}
+                    className="bg-red-100 text-red-500 p-2 rounded-xl transition-transform active:scale-95"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+              </section>
+
+              <section>
+                <div className="flex items-center gap-2 mb-6 px-2 text-primary">
+                  <Heart className="w-5 h-5" />
+                  <h3 className="text-sm uppercase font-black tracking-widest">Món yêu thích</h3>
+                </div>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {displayedFavorites.map(option => (
+                    <button
+                      key={option}
+                      onClick={() => togglePreference('favorites', option)}
+                      className={cn(
+                        "px-4 py-2 rounded-xl text-xs font-bold transition-all",
+                        currentUser.favorites.includes(option) 
+                          ? "bg-primary text-white shadow-md font-black" 
+                          : "bg-slate-100 text-slate-400"
+                      )}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <input 
+                    type="text" 
+                    placeholder="Món yêu thích khác..."
+                    value={otherFavorite}
+                    onChange={(e) => setOtherFavorite(e.target.value)}
+                    className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-2 text-xs font-black focus:ring-1 focus:ring-primary/20"
+                  />
+                  <button 
+                    onClick={() => addOther('favorites')}
+                    className="bg-secondary text-primary p-2 rounded-xl transition-transform active:scale-95"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+              </section>
+            </div>
+            
+            <div className="p-6 border-t border-slate-50">
+              <button 
+                onClick={() => setShowPreferences(false)}
+                className="w-full py-4 bg-primary text-white font-black rounded-2xl shadow-xl shadow-green-900/10 uppercase tracking-widest"
+              >
+                Xác nhận lưu
+              </button>
+            </div>
+          </div>
+        )}
+
         {showHeartMessage && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
             <motion.div 
